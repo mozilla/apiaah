@@ -22,5 +22,5 @@ ARG MRAN="https://cran.microsoft.com/snapshot/2020-04-10/"
 RUN install2.r -d TRUE -r ${MRAN} -- plumber
 
 COPY [".", "./apiaah"]
-ENTRYPOINT ["Rscript", "-e", " pr <- plumber::plumb(commandArgs()[7]); pr$run(host='0.0.0.0', port=as.numeric(Sys.getenv('PORT')))"]
+ENTRYPOINT ["Rscript", "-e", " pr <- plumber::plumb(commandArgs(trailingOnly=TRUE)[1]); pr$run(host='0.0.0.0', port=as.numeric(Sys.getenv('PORT')))"]
 CMD ["apiaah/api.R"]
