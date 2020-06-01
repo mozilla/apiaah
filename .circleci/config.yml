@@ -1,0 +1,31 @@
+# Reference: https://github.com/mozilla/pensieve/blob/master/.circleci/config.yml
+version: 2.1
+
+jobs:
+  # command for building an image with docker caching layer enabled
+  build-and-push:
+    # https://github.com/CircleCI-Public/gcp-gcr-orb/blob/master/src/executors/default.yml
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - gcp-gcr/gcr-auth
+      - gcp-gcr/build-image:
+          image: sguha_apiaah_test
+      - gcp-gcr/push-image:
+          image: sguha_apiaah_test
+
+# See https://circleci.com/orbs/registry/orb/circleci/gcp-gcr
+orbs:
+  gcp-gcr: circleci/gcp-gcr@0.7.1
+
+workflows:
+  build-and-deploy:
+    jobs:
+      - build-and-push:
+          filters:
+            branches:
+              only:
+                - master
